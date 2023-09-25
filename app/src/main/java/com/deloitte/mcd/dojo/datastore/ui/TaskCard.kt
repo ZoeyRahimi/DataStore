@@ -1,6 +1,8 @@
 package com.deloitte.mcd.dojo.datastore.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +25,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,9 +51,9 @@ fun TaskCard(task: Task) {
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
     ) {
-        Column {
+        Column(modifier = Modifier.background(colorResource(id = task.getBackgroundColor()))) {
             Row {
-                Column(Modifier.padding(8.dp)) {
+                Column(Modifier.padding(8.dp), verticalArrangement = Arrangement.SpaceBetween) {
                     Text(
                         text = task.name,
                         style = MaterialTheme.typography.h2,
@@ -59,12 +63,15 @@ fun TaskCard(task: Task) {
                     )
                     Text(
                         text = task.priority.name,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.body2.copy(
+                            color = colorResource(id = task.getTextColor())
+                        ),
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     Row {
                         Icon(
                             imageVector = Icons.Filled.DateRange,
+                            tint = Color.Gray,
                             contentDescription = "Deadline",
                         )
                         Text(
@@ -74,19 +81,6 @@ fun TaskCard(task: Task) {
                         )
                     }
                 }
-            }
-            IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .align(Alignment.End)
-            ) {
-                Icon(
-                    painter = painterResource(
-                        id = if (task.completed) R.drawable.ic_checked
-                        else R.drawable.ic_unchecked
-                    ),
-                    contentDescription = "Completed",
-                )
             }
         }
     }

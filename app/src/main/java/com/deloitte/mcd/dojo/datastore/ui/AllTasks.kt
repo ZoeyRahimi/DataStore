@@ -1,6 +1,8 @@
 package com.deloitte.mcd.dojo.datastore.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,9 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deloitte.mcd.dojo.datastore.R
+import com.deloitte.mcd.dojo.datastore.model.SortOrder
 
 @Composable
 fun AllTasks() {
@@ -71,70 +75,74 @@ fun AllTasks() {
 
 @Composable
 fun SwitchView(viewModel: MainViewModel) {
+    val state by viewModel.tasksUiModelFlow.collectAsState(initial = null)
+
     var switch1 by remember { mutableStateOf(false) }
     var switch2 by remember { mutableStateOf(false) }
     var switch3 by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(text = "\uD83D\uDDC3️  Settings:", style = MaterialTheme.typography.h1)
-        Row(
+    Box(modifier = Modifier.background(Color.LightGray)) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
+                .padding(16.dp)
         ) {
-            Text(
-                text = "Priority", modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .weight(1f)
-            )
-            Switch(
-                checked = switch1,
-                onCheckedChange = { newChecked ->
-                    switch1 = newChecked
-                    viewModel.enableSortByPriority(newChecked)
-                },
-            )
+            Text(text = "\uD83D\uDDC3️  Settings:", style = MaterialTheme.typography.h1)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Priority", modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                )
+                Switch(
+                    checked = state?.sortOrder == SortOrder.BY_PRIORITY ||
+                            state?.sortOrder == SortOrder.BY_DEADLINE_AND_PRIORITY,
+                    onCheckedChange = { newChecked ->
+                        switch1 = newChecked
+                        viewModel.enableSortByPriority(newChecked)
+                    },
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Deadline", modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                )
+                Switch(
+                    checked = state?.sortOrder == SortOrder.BY_DEADLINE ||
+                            state?.sortOrder == SortOrder.BY_DEADLINE_AND_PRIORITY,
+                    onCheckedChange = { newChecked ->
+                        switch2 = newChecked
+                        viewModel.enableSortByDeadline(newChecked)
+                    },
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Show Completed tasks", modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                )
+                Switch(
+                    checked = switch3,
+                    onCheckedChange = { newChecked ->
+                        switch3 = newChecked
+                        viewModel.showCompletedTasks(newChecked)
+                    },
+                )
+            }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = "Deadline", modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .weight(1f)
-            )
-            Switch(
-                checked = switch2,
-                onCheckedChange = { newChecked ->
-                    switch2 = newChecked
-                    viewModel.enableSortByDeadline(newChecked)
-                },
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = "Show Completed tasks", modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .weight(1f)
-            )
-            Switch(
-                checked = switch3,
-                onCheckedChange = { newChecked ->
-                    switch3 = newChecked
-                    viewModel.showCompletedTasks(newChecked)
-                },
-            )
-        }
-
     }
 }

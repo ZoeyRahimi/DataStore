@@ -1,14 +1,16 @@
 package com.deloitte.mcd.dojo.datastore.ui
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.deloitte.mcd.dojo.datastore.R
 import com.deloitte.mcd.dojo.datastore.model.SortOrder
 import com.deloitte.mcd.dojo.datastore.model.TasksRepository
 import com.deloitte.mcd.dojo.datastore.model.data.Task
+import com.deloitte.mcd.dojo.datastore.model.data.TaskPriority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,12 +66,6 @@ class MainViewModel @Inject constructor(
     fun enableSortByPriority(enable: Boolean) {
         tasksRepository.enableSortByPriority(enable)
     }
-
-//    val textColor = when (todo.priority) {
-//        TaskPriority.HIGH -> R.color.red
-//        TaskPriority.MEDIUM -> R.color.yellow
-//        TaskPriority.LOW -> R.color.green
-//    }
 }
 
 data class TasksUiModel(
