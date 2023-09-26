@@ -18,7 +18,6 @@ TODO:
         fun providePreferenceDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             PreferenceDataStoreFactory.create(
                 corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
-                migrations = listOf(SharedPreferencesMigration(context, USER_PREFERENCES_NAME)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES_NAME) }
             )
@@ -115,3 +114,49 @@ TODO:
             preferences[PreferencesKeys.SORT_ORDER] = newSortOrder.name
         }
         }
+
+
+10. Migrate from sharedPreference
+
+        migrations = listOf(SharedPreferencesMigration(context, USER_PREFERENCES_NAME)),
+
+11. Update MainViewModel to use New repo
+
+             private val userPreferencesFlow = preferencesRepository.userPreferencesFlow
+       
+           val tasksUiModelFlow = combine(
+               tasksRepository.getTasks(),
+               userPreferencesFlow
+           ) { tasks: List<Task>, userPreferences: UserPreferences ->
+               return@combine TasksUiModel(
+                   tasks = filterSortTasks(
+                       tasks,
+                       userPreferences.showCompleted,
+                       userPreferences.sortOrder
+                   ),
+                   showCompleted = userPreferences.showCompleted,
+                   sortOrder = userPreferences.sortOrder
+               )
+           }
+
+And:
+
+                 fun enableSortByDeadline(enable: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.enableSortByDeadline(enable)
+        }
+    }
+
+    fun showCompletedTasks(show: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.updateShowCompleted(showCompleted = show)
+        }
+    }
+
+    fun enableSortByPriority(enable: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.enableSortByPriority(enable)
+        }
+    }
+
+11. Clean up the sharedPrefernce 
