@@ -136,7 +136,7 @@ fun SwitchView(viewModel: MainViewModel) {
                         .weight(1f)
                 )
                 Switch(
-                    checked = switch3,
+                    checked = state?.showCompleted ?: false,
                     onCheckedChange = { newChecked ->
                         switch3 = newChecked
                         viewModel.showCompletedTasks(newChecked)

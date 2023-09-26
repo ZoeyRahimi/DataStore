@@ -1,33 +1,37 @@
 package com.deloitte.mcd.dojo.datastore.ui
 
 import androidx.lifecycle.ViewModel
-import com.deloitte.mcd.dojo.datastore.model.SharedPreferenceRepository
+import androidx.lifecycle.viewModelScope
 import com.deloitte.mcd.dojo.datastore.model.SortOrder
 import com.deloitte.mcd.dojo.datastore.model.TasksRepository
+import com.deloitte.mcd.dojo.datastore.model.UserPreferencesRepository
 import com.deloitte.mcd.dojo.datastore.model.data.Task
+import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val tasksRepository: TasksRepository,
-    private val sharedPreferenceRepository: SharedPreferenceRepository
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
-    private val showCompletedFlow = MutableStateFlow(false)
-    private val sortOrderFlow = sharedPreferenceRepository.sortOrderFlow
+    private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
 
     val tasksUiModelFlow = combine(
         tasksRepository.getTasks(),
-        showCompletedFlow,
-        sortOrderFlow
-    ) { tasks: List<Task>, showCompleted: Boolean, sortOrder: SortOrder ->
+        userPreferencesFlow
+    ) { tasks: List<Task>, userPreferences: UserPreferences ->
         return@combine TasksUiModel(
-            tasks = filterSortTasks(tasks, showCompleted, sortOrder),
-            showCompleted = showCompleted,
-            sortOrder = sortOrder
+            tasks = filterSortTasks(
+                tasks,
+                userPreferences.showCompleted,
+                userPreferences.sortOrder
+            ),
+            showCompleted = userPreferences.showCompleted,
+            sortOrder = userPreferences.sortOrder
         )
     }
 
@@ -54,15 +58,21 @@ class MainViewModel @Inject constructor(
     }
 
     fun enableSortByDeadline(enable: Boolean) {
-        sharedPreferenceRepository.enableSortByDeadline(enable)
+        viewModelScope.launch {
+            userPreferencesRepository.enableSortByDeadline(enable)
+        }
     }
 
     fun showCompletedTasks(show: Boolean) {
-        showCompletedFlow.value = show
+        viewModelScope.launch {
+            userPreferencesRepository.updateSHowCompleted(showCompleted = show)
+        }
     }
 
     fun enableSortByPriority(enable: Boolean) {
-        sharedPreferenceRepository.enableSortByPriority(enable)
+        viewModelScope.launch {
+            userPreferencesRepository.enableSortByPriority(enable)
+        }
     }
 }
 
