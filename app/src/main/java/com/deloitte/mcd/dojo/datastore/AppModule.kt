@@ -30,6 +30,5 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepository(sharedPreferenceRepository: SharedPreferenceRepository): TasksRepository =
-        TasksRepository(sharedPreferenceRepository)
+    fun provideRepository(): TasksRepository = TasksRepository()
 }

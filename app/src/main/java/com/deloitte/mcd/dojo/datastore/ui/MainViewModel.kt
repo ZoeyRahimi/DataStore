@@ -1,25 +1,23 @@
 package com.deloitte.mcd.dojo.datastore.ui
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.deloitte.mcd.dojo.datastore.R
+import com.deloitte.mcd.dojo.datastore.model.SharedPreferenceRepository
 import com.deloitte.mcd.dojo.datastore.model.SortOrder
 import com.deloitte.mcd.dojo.datastore.model.TasksRepository
 import com.deloitte.mcd.dojo.datastore.model.data.Task
-import com.deloitte.mcd.dojo.datastore.model.data.TaskPriority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val tasksRepository: TasksRepository
+    private val tasksRepository: TasksRepository,
+    private val sharedPreferenceRepository: SharedPreferenceRepository
 ) : ViewModel() {
 
     private val showCompletedFlow = MutableStateFlow(false)
-    private val sortOrderFlow = tasksRepository.sortOrderFlow
+    private val sortOrderFlow = sharedPreferenceRepository.sortOrderFlow
 
     val tasksUiModelFlow = combine(
         tasksRepository.getTasks(),
@@ -56,7 +54,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun enableSortByDeadline(enable: Boolean) {
-        tasksRepository.enableSortByDeadline(enable)
+        sharedPreferenceRepository.enableSortByDeadline(enable)
     }
 
     fun showCompletedTasks(show: Boolean) {
@@ -64,7 +62,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun enableSortByPriority(enable: Boolean) {
-        tasksRepository.enableSortByPriority(enable)
+        sharedPreferenceRepository.enableSortByPriority(enable)
     }
 }
 

@@ -13,7 +13,7 @@ data class Task(
     val priority: TaskPriority,
     val completed: Boolean = false
 ) {
-    fun getTextColor(): Int {
+    fun taskTextColor(): Int {
         return when (this.priority) {
             TaskPriority.HIGH -> R.color.red
             TaskPriority.MEDIUM -> R.color.yellow
@@ -21,7 +21,7 @@ data class Task(
         }
     }
 
-    fun getBackgroundColor(): Int {
+    fun taskBackgroundColor(): Int {
         return when (this.completed) {
             true -> R.color.greyAlpha
             false -> R.color.white

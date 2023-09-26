@@ -10,14 +10,57 @@ private const val SORT_ORDER_KEY = "sort_order"
 
 class SharedPreferenceRepository @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
-    fun getSortOrder(): SortOrder {
+    private val _sortOrderFlow = MutableStateFlow(getSortOrder())
+    val sortOrderFlow: StateFlow<SortOrder> = _sortOrderFlow
+
+    fun enableSortByDeadline(enable: Boolean) {
+        val currentOrder = sortOrderFlow.value
+        val newSortOrder =
+            if (enable) {
+                if (currentOrder == SortOrder.BY_PRIORITY) {
+                    SortOrder.BY_DEADLINE_AND_PRIORITY
+                } else {
+                    SortOrder.BY_DEADLINE
+                }
+            } else {
+                if (currentOrder == SortOrder.BY_DEADLINE_AND_PRIORITY) {
+                    SortOrder.BY_PRIORITY
+                } else {
+                    SortOrder.NONE
+                }
+            }
+        updateSortOrder(newSortOrder)
+        _sortOrderFlow.value = newSortOrder
+    }
+
+    fun enableSortByPriority(enable: Boolean) {
+        val currentOrder = sortOrderFlow.value
+        val newSortOrder =
+            if (enable) {
+                if (currentOrder == SortOrder.BY_DEADLINE) {
+                    SortOrder.BY_DEADLINE_AND_PRIORITY
+                } else {
+                    SortOrder.BY_PRIORITY
+                }
+            } else {
+                if (currentOrder == SortOrder.BY_DEADLINE_AND_PRIORITY) {
+                    SortOrder.BY_DEADLINE
+                } else {
+                    SortOrder.NONE
+                }
+            }
+        updateSortOrder(newSortOrder)
+        _sortOrderFlow.value = newSortOrder
+    }
+
+    private fun getSortOrder(): SortOrder {
         val order = sharedPreferences.getString(SORT_ORDER_KEY, SortOrder.NONE.name)
             ?: SortOrder.NONE.name
         return SortOrder.valueOf(order)
     }
 
 
-    fun updateSortOrder(sortOrder: SortOrder) {
+    private fun updateSortOrder(sortOrder: SortOrder) {
         sharedPreferences.edit {
             putString(SORT_ORDER_KEY, sortOrder.name)
         }
