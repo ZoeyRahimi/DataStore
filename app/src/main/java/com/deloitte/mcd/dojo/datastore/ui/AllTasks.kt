@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deloitte.mcd.dojo.datastore.R
-import com.deloitte.mcd.dojo.datastore.model.SortOrder
+import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences.SortOrder
 
 @Composable
 fun AllTasks() {
@@ -63,8 +63,8 @@ fun AllTasks() {
                         )
                     }
                 }
-                state?.tasks?.let {
-                    items(it) { task ->
+                state?.tasks?.let { list ->
+                    items(items = list) { task ->
                         TaskCard(task)
                     }
                 }
@@ -136,7 +136,7 @@ fun SwitchView(viewModel: MainViewModel) {
                         .weight(1f)
                 )
                 Switch(
-                    checked = switch3,
+                    checked = state?.showCompleted ?: false,
                     onCheckedChange = { newChecked ->
                         switch3 = newChecked
                         viewModel.showCompletedTasks(newChecked)
