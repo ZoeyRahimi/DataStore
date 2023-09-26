@@ -8,14 +8,14 @@ TODOs:
                  ...
                  id "com.google.protobuf" version "0.9.1"
        }
-   
-         dependencies {
+
+        dependencies {
           //Proto dataStore
           implementation  "androidx.datastore:datastore:1.0.0"
           implementation  "com.google.protobuf:protobuf-javalite:3.18.0"
-         }
+        }
 
-         protobuf {
+        protobuf {
           protoc {
               artifact = "com.google.protobuf:protoc:3.19.4"
           }
@@ -33,22 +33,24 @@ TODOs:
               }
           }
         }
-2. Create the proto file
-  - Create a new file called user_prefs.proto in the app/src/main/proto directory.
-   
-        syntax = "proto3";
-        
-        option java_package = "com.deloitte.mcd.dojo.datastore.model.data";
-        option java_multiple_files = true;
-        
-        message UserPreferences {
-          // filter for showing / hiding completed tasks
-          bool show_completed = 1;
-        }
-    
-4. Build the project and make sure the UserPreferences class is created
 
-5. Create the serializer
+2. Create the proto file
+
+    - Create a new file called user_prefs.proto in the app/src/main/proto directory.
+
+          syntax = "proto3";
+       
+          option java_package = "com.deloitte.mcd.dojo.datastore.model.data";
+          option java_multiple_files = true;
+       
+          message UserPreferences {
+            // filter for showing / hiding completed tasks
+            bool show_completed = 1;
+          }
+
+3. Build the project and make sure the UserPreferences class is created
+
+4. Create the serializer
 
         object UserPreferencesSerializer : Serializer<UserPreferences> {
             override val defaultValue: UserPreferences = UserPreferences.getDefaultInstance()
@@ -63,36 +65,36 @@ TODOs:
             override suspend fun writeTo(t: UserPreferences, output: OutputStream) = t.writeTo(output)
         }
 
-6. Creating the DataStore
+5. Creating the DataStore
 
-- The dataStore delegate:
+    - The dataStore delegate:
 
-        private const val USER_PREFERENCES_NAME = "user_preferences"
-        private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
-        private const val SORT_ORDER_KEY = "sort_order"
-        
-        private val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
-            fileName = DATA_STORE_FILE_NAME,
-            serializer = UserPreferencesSerializer
-        )
-        
-        class MainActivity: AppCompatActivity() { ... }
-- Dependency Injection:
-      
-       @Provides
-          @Singleton
-          fun provideProtoDataStore(@ApplicationContext context: Context): DataStore<UserPreferences> =
-              DataStoreFactory.create(
-                  serializer = UserPreferencesSerializer,
-                  corruptionHandler = ReplaceFileCorruptionHandler { UserPreferences.getDefaultInstance() },
-                  produceFile = { File(context.filesDir, USER_PREFERENCES_NAME) }
-              )
+            private const val USER_PREFERENCES_NAME = "user_preferences"
+            private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
+            private const val SORT_ORDER_KEY = "sort_order"
+         
+            private val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
+                fileName = DATA_STORE_FILE_NAME,
+                serializer = UserPreferencesSerializer
+            )
+         
+            class MainActivity: AppCompatActivity() { ... }
+    - Dependency Injection:
 
-7. Create UserPreferencesRepository
+           @Provides
+              @Singleton
+              fun provideProtoDataStore(@ApplicationContext context: Context): DataStore<UserPreferences> =
+                  DataStoreFactory.create(
+                      serializer = UserPreferencesSerializer,
+                      corruptionHandler = ReplaceFileCorruptionHandler { UserPreferences.getDefaultInstance() },
+                      produceFile = { File(context.filesDir, USER_PREFERENCES_NAME) }
+                  )
+
+6. Create UserPreferencesRepository
 
        class UserPreferencesRepository @Inject constructor(private val dataStore: DataStore<UserPreferences>) {
 
-8. Reading the preferences and Handling exceptions while reading data
+7. Reading the preferences and Handling exceptions while reading data
 
        val userPreferencesFlow: Flow<UserPreferences> = dataStore.data
             .catch { exception ->
@@ -102,8 +104,9 @@ TODOs:
                     throw exception
                 }
             }
-   
-10. Now that everything works fine, let's add the sortOrder in proto file and remove the SortOrder kotlin class from the project
+
+8. Now that everything works fine, let's add the sortOrder in proto file and remove the SortOrder
+   kotlin class from the project
 
         message UserPreferences {
           // filter for showing / hiding completed tasks
@@ -122,7 +125,7 @@ TODOs:
           SortOrder sort_order = 2;
         }
 
-    Delete:
+   Delete:
 
         enum class SortOrder {
             NONE,
@@ -131,9 +134,9 @@ TODOs:
             BY_DEADLINE_AND_PRIORITY
         }
 
-11. clean up the code and fix the SortOrder imports
-    
-13. Migrating from SharedPreferences
+9. clean up the code and fix the SortOrder imports
+
+10. Migrating from SharedPreferences
 
         migrations = listOf(SharedPreferencesMigration(
                     context,
@@ -154,8 +157,8 @@ TODOs:
                     }
                 })
 
-14. Saving the sort order to DataStore
-    
+11. Saving the sort order to DataStore
+
         suspend fun enableSortByDeadline(enable: Boolean) {
             dataStore.updateData { preferences ->
                 val currentOrder = preferences.sortOrder
@@ -178,7 +181,7 @@ TODOs:
                     .build()
             }
         }
-    
+
         suspend fun enableSortByPriority(enable: Boolean) {
             dataStore.updateData { preferences ->
                 val currentOrder = preferences.sortOrder
@@ -202,5 +205,4 @@ TODOs:
             }
         }
 
-    15. Now you can remove all the usages of SharedPreferences.
-
+12. Now you can remove all the usages of SharedPreferences.
