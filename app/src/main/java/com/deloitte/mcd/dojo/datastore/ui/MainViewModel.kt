@@ -78,6 +78,10 @@ class MainViewModel @Inject constructor(
             userPreferencesRepository.enableSortByPriority(enable)
         }
     }
+
+    fun addNewTask(task:Task) {
+        //TODO"Not yet implemented"
+    }
 }
 
 data class TasksUiModel(

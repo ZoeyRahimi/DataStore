@@ -1,4 +1,4 @@
-package com.deloitte.mcd.dojo.datastore.ui
+package com.deloitte.mcd.dojo.datastore.ui.allTask
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
@@ -29,10 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deloitte.mcd.dojo.datastore.R
 import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences.SortOrder
+import com.deloitte.mcd.dojo.datastore.ui.MainViewModel
 
 @Composable
-fun AllTasks() {
-    val viewModel: MainViewModel = viewModel()
+fun AllTasks(
+    viewModel: MainViewModel,
+    onNewButtonClick: () -> Unit
+) {
     val state by viewModel.tasksUiModelFlow.collectAsState(initial = null)
     Scaffold(
         topBar = {
@@ -41,6 +47,14 @@ fun AllTasks() {
                 title = { Text(stringResource(R.string.app_name)) }
             )
         },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onNewButtonClick,
+                icon = { Icon(Icons.Filled.Add, "Floating action button.") },
+                text = { Text(text = "New Task") },
+                backgroundColor = MaterialTheme.colors.primary
+            )
+        }
     ) {
         Column {
             SwitchView(viewModel)

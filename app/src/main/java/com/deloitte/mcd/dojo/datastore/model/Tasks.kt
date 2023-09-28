@@ -22,7 +22,7 @@ val tasks = listOf(
     ),
     Task(
         name = "Creating the DataStore",
-        deadline = simpleDateFormat.parse("2022-08-06")!!,
+        deadline = simpleDateFormat.parse("2022-8-06")!!,
         priority = TaskPriority.LOW
     ),
     Task(
