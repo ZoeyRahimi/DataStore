@@ -43,17 +43,17 @@ val tasks = listOf(
     Task(
         name = "Handling exceptions while reading data",
         deadline = simpleDateFormat.parse("2022-06-03")!!,
-        priority = TaskPriority.HIGH
+        priority = TaskPriority.MEDIUM
     ),
     Task(
         name = "Writing data to Preferences DataStore",
         deadline = simpleDateFormat.parse("2022-05-03")!!,
-        priority = TaskPriority.HIGH
+        priority = TaskPriority.LOW
     ),
     Task(
         name = "Migrating from SharedPreferences",
         deadline = simpleDateFormat.parse("2022-04-03")!!,
-        priority = TaskPriority.HIGH
+        priority = TaskPriority.MEDIUM
     ),
     Task(
         name = "Update TasksViewModel to use UserPreferencesRepository",
@@ -63,6 +63,6 @@ val tasks = listOf(
     Task(
         name = "Clean up SharedPreferencesRepository",
         deadline = simpleDateFormat.parse("2022-02-03")!!,
-        priority = TaskPriority.HIGH
+        priority = TaskPriority.LOW
     )
 )
