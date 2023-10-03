@@ -82,13 +82,31 @@ TODOs:
     - Dependency Injection:
 
            @Provides
-              @Singleton
-              fun provideProtoDataStore(@ApplicationContext context: Context): DataStore<UserPreferences> =
-                  DataStoreFactory.create(
-                      serializer = UserPreferencesSerializer,
-                      corruptionHandler = ReplaceFileCorruptionHandler { UserPreferences.getDefaultInstance() },
-                      produceFile = { File(context.filesDir, USER_PREFERENCES_NAME) }
-                  )
+           @Singleton
+           fun provideProtoDataStore(@ApplicationContext context: Context): DataStore<UserPreferences> =
+               DataStoreFactory.create(
+                   serializer = UserPreferencesSerializer,
+                   corruptionHandler = ReplaceFileCorruptionHandler { UserPreferences.getDefaultInstance() },
+                   produceFile = { File(context.filesDir, DATA_STORE_FILE_NAME) },
+                   migrations = listOf(SharedPreferencesMigration(
+                       context,
+                       USER_PREFERENCES_NAME
+                   ) { sharedPrefs: SharedPreferencesView, currentData: UserPreferences ->
+                       // Define the mapping from SharedPreferences to UserPreferences
+                       if (currentData.sortOrder == UserPreferences.SortOrder.UNSPECIFIED) {
+                           currentData.toBuilder().setSortOrder(
+                               UserPreferences.SortOrder.valueOf(
+                                   sharedPrefs.getString(
+                                       SORT_ORDER_KEY,
+                                       UserPreferences.SortOrder.NONE.name
+                                   )!!
+                               )
+                           ).build()
+                       } else {
+                           currentData
+                       }
+                   })
+               )
 
 6. Create UserPreferencesRepository
 
