@@ -1,6 +1,7 @@
 package com.deloitte.mcd.dojo.datastore.model
 
 import androidx.datastore.core.DataStore
+import com.deloitte.mcd.dojo.datastore.model.data.Task
 import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -69,6 +70,14 @@ class UserPreferencesRepository @Inject constructor(private val dataStore: DataS
                 }
             preferences.toBuilder()
                 .setSortOrder(newSortOrder)
+                .build()
+        }
+    }
+
+    suspend fun saveNewTask(task: Task) {
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .addTasks(task)
                 .build()
         }
     }

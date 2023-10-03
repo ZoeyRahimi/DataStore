@@ -18,4 +18,18 @@ message UserPreferences {
 
   // user selected tasks sorting order
   SortOrder sort_order = 2;
+  repeated Task tasks = 3;
+}
+
+enum TaskPriority {
+  LOW = 0;
+  MEDIUM = 1;
+  HIGH = 2;
+}
+
+message Task {
+  string name = 1;
+  string deadline = 2;
+  TaskPriority priority = 3;
+  bool completed = 4;
 }

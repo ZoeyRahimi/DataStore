@@ -32,7 +32,7 @@ import com.deloitte.mcd.dojo.datastore.model.data.TaskPriority
 
 @Composable
 fun SegmentedControl(
-    items: Array<TaskPriority>,
+    items: List<TaskPriority> = TaskPriority.values().filter { it != TaskPriority.UNRECOGNIZED },
     defaultSelectedItem: TaskPriority = TaskPriority.HIGH,
     onItemSelection: (selectedItem: TaskPriority) -> Unit
 ) {
@@ -55,7 +55,8 @@ fun SegmentedControl(
                     modifier = Modifier
                         .weight(1f)
                         .offset(0.dp, 0.dp)
-                        .zIndex(if (isSelectedItem) 1f else 0f).padding(4.dp),
+                        .zIndex(if (isSelectedItem) 1f else 0f)
+                        .padding(4.dp),
                     onClick = {
                         selectedItem.value = item
                         onItemSelection(selectedItem.value)

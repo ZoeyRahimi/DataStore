@@ -21,7 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deloitte.mcd.dojo.datastore.model.data.Task
-import com.deloitte.mcd.dojo.datastore.model.tasks
+import com.deloitte.mcd.dojo.datastore.model.data.taskBackgroundColor
+import com.deloitte.mcd.dojo.datastore.model.data.taskTextColor
 import com.deloitte.mcd.dojo.datastore.ui.theme.TasksTheme
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -62,7 +63,7 @@ fun TaskCard(task: Task) {
                             contentDescription = "Deadline",
                         )
                         Text(
-                            text = dateFormat.format(task.deadline),
+                            text = task.deadline,
                             style = MaterialTheme.typography.body2,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
@@ -73,29 +74,29 @@ fun TaskCard(task: Task) {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true, name = "Light mode")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark mode")
-@Composable
-fun PlanetCardPreview() {
-    TasksTheme {
-        TaskCard(tasks[0])
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true, name = "Light mode")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark mode")
-@Composable
-fun PlanetCard1Preview() {
-    TasksTheme {
-        TaskCard(tasks[0])
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true, name = "Light mode")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark mode")
-@Composable
-fun PlanetCard2Preview() {
-    TasksTheme {
-        TaskCard(tasks[0])
-    }
-}
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true, name = "Light mode")
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark mode")
+//@Composable
+//fun PlanetCardPreview() {
+//    TasksTheme {
+//        TaskCard(tasks[0])
+//    }
+//}
+//
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true, name = "Light mode")
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark mode")
+//@Composable
+//fun PlanetCard1Preview() {
+//    TasksTheme {
+//        TaskCard(tasks[0])
+//    }
+//}
+//
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true, name = "Light mode")
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark mode")
+//@Composable
+//fun PlanetCard2Preview() {
+//    TasksTheme {
+//        TaskCard(tasks[0])
+//    }
+//}

@@ -2,33 +2,28 @@ package com.deloitte.mcd.dojo.datastore.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deloitte.mcd.dojo.datastore.model.TasksRepository
 import com.deloitte.mcd.dojo.datastore.model.UserPreferencesRepository
 import com.deloitte.mcd.dojo.datastore.model.data.Task
 import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences.SortOrder
+import kotlinx.coroutines.flow.map
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val tasksRepository: TasksRepository,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
     private val userPreferencesFlow: Flow<UserPreferences> =
         userPreferencesRepository.userPreferencesFlow
 
-    val tasksUiModelFlow = combine(
-        tasksRepository.getTasks(),
-        userPreferencesFlow
-    ) { tasks: List<Task>, userPreferences: UserPreferences ->
-        return@combine TasksUiModel(
+    val tasksUiModelFlow = userPreferencesFlow.map { userPreferences ->
+        TasksUiModel(
             tasks = filterSortTasks(
-                tasks,
+                userPreferences.tasksList,
                 userPreferences.showCompleted,
                 userPreferences.sortOrder
             ),
@@ -79,8 +74,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addNewTask(task:Task) {
-        //TODO"Not yet implemented"
+    fun addNewTask(task: Task) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveNewTask(task)
+        }
     }
 }
 

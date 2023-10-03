@@ -6,7 +6,6 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
-import com.deloitte.mcd.dojo.datastore.model.TasksRepository
 import com.deloitte.mcd.dojo.datastore.model.UserPreferencesSerializer
 import com.deloitte.mcd.dojo.datastore.model.data.UserPreferences
 import dagger.Module
@@ -24,11 +23,6 @@ private const val SORT_ORDER_KEY = "sort_order"
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideRepository(): TasksRepository = TasksRepository()
-
 
     @Provides
     @Singleton
